@@ -1,9 +1,18 @@
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $name = $_POST["name"];
-  $email = $_POST["email"];
-  $details = $_POST["details"];
+  $name = trim(filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING));
+  $email = trim(filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL));
+  $details = trim(filter_input(INPUT_POST, "name", FILTER_SANITIZE_SPECIAL_CHARS));
+
+  if ($name == "" || $email == "" || $details == "") {
+    echo "Please fill in the required fields: Name, Email and Details";
+    exit;
+  }
+  if ($_POST["address"] != "") {
+    echo "Bad form input";
+    exit;
+  }
 
   echo "<pre>";
   $email_body = "";
@@ -32,16 +41,23 @@ include("inc/header.php"); ?>
       <form method="post" action="suggest.php">
         <table>
           <tr>
-            <th><label for="name">Name </label></th>
+            <th><label for="name">Name</label></th>
             <td><input type="text" id="name" name="name"></td>
           </tr>
           <tr>
-            <th><label for="email">Email </label></th>
+            <th><label for="email">Email</label></th>
             <td><input type="text" id="email" name="email"></td>
           </tr>
           <tr>
-            <th><label for="details">Suggest Item Details </label></th>
+            <th><label for="details">Suggest Item Details</label></th>
             <td><textarea id="details" name="details"></textarea></td>
+          </tr>
+          <tr style="display:none">
+            <th><label for="address">Address</label></th>
+            <td><input type="text" id="address" name="address">
+              <p>This field is intended to be blank</p>
+            </td>
+
           </tr>
         </table>
         <input type="submit" value="Send">
